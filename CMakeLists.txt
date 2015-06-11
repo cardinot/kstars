@@ -3,6 +3,8 @@ set (KStars_VERSION_MAJOR 2)
 set (KStars_VERSION_MINOR 2)
 set (KStars_VERSION_REVISION 0)
 
+set(QT_QMAKE_EXECUTABLE /usr/bin/qmake-qt4)
+
 set(CMAKE_MODULE_PATH ${kstars_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
 configure_file( "${kstars_SOURCE_DIR}/kstars/version.h.cmake"
