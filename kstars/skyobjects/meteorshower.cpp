@@ -24,6 +24,10 @@ MeteorShower::MeteorShower()
 {
 }
 
+MeteorShower::~MeteorShower()
+{
+}
+
 MeteorShower* MeteorShower::clone() const
 {
 }
