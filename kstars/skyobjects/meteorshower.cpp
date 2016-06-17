@@ -20,7 +20,7 @@
 #include <typeinfo>
 #include "kspopupmenu.h"
 
-MeteorShower::MeteorShower()
+MeteorShower::MeteorShower(const QVariantMap& map)
 {
 }
 
@@ -30,4 +30,5 @@ MeteorShower::~MeteorShower()
 
 MeteorShower* MeteorShower::clone() const
 {
+    return NULL;
 }

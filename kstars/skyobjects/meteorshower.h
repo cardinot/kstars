@@ -46,13 +46,14 @@ public:
 
     /**
      * Constructor
+     * @param map A QVariantMap containing all the data about a Meteor Shower
      */
-    explicit MeteorShower();
+    explicit MeteorShower(const QVariantMap& map);
 
     /**
      * Destructor
      */
-    virtual ~MeteorShower() {}
+    virtual ~MeteorShower();
 
     /**
      * @return a clone of this object

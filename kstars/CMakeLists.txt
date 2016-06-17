@@ -308,7 +308,7 @@ set(libkstarscomponents_SRCS
    skycomponents/flagcomponent.cpp
    skycomponents/targetlistcomponent.cpp
    skycomponents/notifyupdatesui.cpp
-   skyobjects/meteorshowerscomponent.cpp
+   skycomponents/meteorshowerscomponent.cpp
 )
 
 set(libkstarswidgets_SRCS
