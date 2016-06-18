@@ -371,6 +371,8 @@ QString SkyObject::typeName( int t ) {
         return i18n( "Quasar" );
     case MULT_STAR:
         return i18n( "Multiple Star" );
+    case METEOR_SHOWER:
+        return i18n( "Meteor Shower" );
     default:
         return i18n( "Unknown Type" );
     }

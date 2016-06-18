@@ -130,6 +130,7 @@ public:
         RADIO_SOURCE,
         SATELLITE,
         SUPERNOVA,
+        METEOR_SHOWER,
         TYPE_UNKNOWN
     };
 
