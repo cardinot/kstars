@@ -21,7 +21,8 @@
 #include "kspopupmenu.h"
 
 MeteorShower::MeteorShower(const QVariantMap& map)
-    : m_speed(0)
+    : m_status(INVALID)
+    , m_speed(0)
     , m_radiantAlpha(0)
     , m_radiantDelta(0)
     , m_driftAlpha(0)
@@ -139,6 +140,8 @@ MeteorShower::MeteorShower(const QVariantMap& map)
 
         m_activities.replace(i, a);
     }
+
+    m_status = UNDEFINED;
 }
 
 MeteorShower::~MeteorShower()

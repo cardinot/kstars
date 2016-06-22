@@ -31,16 +31,27 @@ class MeteorShower : public SkyObject
 
 public:
     /**
+     * @enum Meteor Shower status
+     */
+    enum Status {
+        INVALID,          // not initialized properly
+        UNDEFINED,        // it's loaded but 'activity' is undefined
+        INACTIVE,         // inactive radiant
+        ACTIVE_CONFIRMED, // active radiant - confirmed data
+        ACTIVE_GENERIC    // active radiant - generic data
+    };
+
+    /**
      * @struct Activity
      */
     typedef struct
     {
-        int year;                  // The catalog year (0 for generic)
-        int zhr;                   // The ZHR on peak
-        QList<int> variable;       // The ZHR range when it's variable
-        QDate start;               // Initial date of activity
-        QDate finish;              // Last date of activity
-        QDate peak;                // Peak activity
+        int year;                  // catalog year (0 for generic)
+        int zhr;                   // ZHR on peak
+        QList<int> variable;       // ZHR range when it's variable
+        QDate start;               // initial date of activity
+        QDate finish;              // last date of activity
+        QDate peak;                // peak day
     } Activity;
 
     /**
@@ -61,17 +72,19 @@ public:
     virtual MeteorShower* clone() const;
 
 private:
+    Status m_status;                // meteor shower status
+
     // data from catalog
-    QString m_showerID;                // meteor shower ID
-    QString m_designation;             // meteor shower designation
-    QList<Activity> m_activities;      // Activity list
-    int m_speed;                       // speed of meteors
-    dms m_radiantAlpha;                // radiant's R.A. (peak day)
-    dms m_radiantDelta;                // radiant's Dec. (peak day)
-    dms m_driftAlpha;                  // drift of R.A. for each day from peak
-    dms m_driftDelta;                  // drift of Dec. for each day from peak
-    QString m_parentObj;               // parent object for meteor shower
-    float m_pidx;                      // the population index
+    QString m_showerID;             // meteor shower ID
+    QString m_designation;          // meteor shower designation
+    QList<Activity> m_activities;   // Activity list
+    int m_speed;                    // speed of meteors
+    dms m_radiantAlpha;             // radiant's R.A. (peak day)
+    dms m_radiantDelta;             // radiant's Dec. (peak day)
+    dms m_driftAlpha;               // drift of R.A. for each day from peak
+    dms m_driftDelta;               // drift of Dec. for each day from peak
+    QString m_parentObj;            // parent object for meteor shower
+    float m_pidx;                   // the population index
 };
 
 #endif
