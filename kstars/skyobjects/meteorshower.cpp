@@ -147,5 +147,6 @@ MeteorShower::~MeteorShower()
 
 MeteorShower* MeteorShower::clone() const
 {
-    return NULL;
+    Q_ASSERT(typeid(this) == typeid(static_cast<const MeteorShower*> (this)));
+    return new MeteorShower(*this);
 }
