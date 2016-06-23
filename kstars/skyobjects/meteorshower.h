@@ -71,6 +71,11 @@ public:
      */
     virtual MeteorShower* clone() const;
 
+    /**
+     * @return current meteor shower status
+     */
+    Status getStatus() { return m_status; }
+
 private:
     Status m_status;                // meteor shower status
 
