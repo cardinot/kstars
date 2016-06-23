@@ -21,16 +21,16 @@
 #include "listcomponent.h"
 #include "skyobjects/meteorshower.h"
 
-#include <QProcess>
 #include <QList>
+
+#define MS_CATALOG_VERSION 1
+
+class MeteorShowers;
 
 /**
  * @class MeteorShowersComponent
  * @author Marcos Cardinot
  */
-
-class MeteorShowers;
-
 class MeteorShowersComponent : public QObject, public ListComponent
 {
     Q_OBJECT
@@ -49,6 +49,8 @@ public:
     virtual void draw(SkyPainter* skyp);
 
     virtual bool selected();
+
+    void loadData(const QString& jsonPath);
 
 private:
     QList<SkyObject*> m_meteorShowers;
