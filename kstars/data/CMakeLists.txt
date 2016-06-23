@@ -1,6 +1,7 @@
 ########### install files ###############
 
 install(FILES
+    showers.json
     kstars.png
     geomap.png
     citydb.sqlite
