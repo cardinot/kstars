@@ -41,7 +41,7 @@ void MeteorShowersComponent::loadData(const QString& jsonPath)
 {
     qDebug() << "Meteor Showers: Loading data!" << QDir::toNativeSeparators(jsonPath);
 
-    m_meteorShowers.clear();
+    m_ObjectList.clear();
     objectNames(SkyObject::METEOR_SHOWER).clear();
 
     QFile jsonFile(jsonPath);
@@ -76,29 +76,10 @@ void MeteorShowersComponent::loadData(const QString& jsonPath)
         MeteorShower* ms = new MeteorShower(msData);
         if (ms->getStatus() != MeteorShower::INVALID)
         {
-            m_meteorShowers.append(ms);
+            m_ObjectList.append(ms);
             objectNames(SkyObject::METEOR_SHOWER).append(ms->name());
         }
     }
-}
-
-void MeteorShowersComponent::update(KSNumbers* num)
-{
-}
-
-bool MeteorShowersComponent::selected()
-{
-    return false;
-}
-
-SkyObject* MeteorShowersComponent::findByName(const QString& name)
-{
-    return NULL;
-}
-
-SkyObject* MeteorShowersComponent::objectNearest(SkyPoint* p, double& maxrad)
-{
-    return NULL;
 }
 
 void MeteorShowersComponent::draw(SkyPainter *skyp)

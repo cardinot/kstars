@@ -24,7 +24,7 @@
 
 /**
  * @class MeteorShower
- * @author Marcos Cardinot
+ * @author Marcos Cardinot <mcardinot@gmail.com>
  */
 class MeteorShower : public SkyObject
 {

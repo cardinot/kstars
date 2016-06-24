@@ -1,5 +1,5 @@
 /***************************************************************************
-                          supernova.cpp  -  K Desktop Planetarium
+                          meteorshower.cpp  -  K Desktop Planetarium
                              -------------------
     begin                : 01 June 2016
     copyright            : (C) 2016 by Marcos Cardinot
@@ -21,7 +21,8 @@
 #include "kspopupmenu.h"
 
 MeteorShower::MeteorShower(const QVariantMap& map)
-    : m_status(INVALID)
+    : SkyObject(SkyObject::METEOR_SHOWER)
+    , m_status(INVALID)
     , m_speed(0)
     , m_radiantAlpha(0)
     , m_radiantDelta(0)
@@ -140,6 +141,12 @@ MeteorShower::MeteorShower(const QVariantMap& map)
 
         m_activities.replace(i, a);
     }
+
+    // SkyObject set-up
+    set(m_radiantAlpha, m_radiantDelta);
+    setName(m_designation);
+    setName2(m_showerID);
+    setLongName(m_designation);
 
     m_status = UNDEFINED;
 }

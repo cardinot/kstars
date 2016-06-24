@@ -29,7 +29,7 @@ class MeteorShowers;
 
 /**
  * @class MeteorShowersComponent
- * @author Marcos Cardinot
+ * @author Marcos Cardinot <mcardinot@gmail.com>
  */
 class MeteorShowersComponent : public QObject, public ListComponent
 {
@@ -40,20 +40,9 @@ public:
 
     virtual ~MeteorShowersComponent();
 
-    virtual SkyObject* findByName(const QString& name);
-
-    virtual SkyObject* objectNearest(SkyPoint* p, double& maxrad);
-
-    virtual void update(KSNumbers* num = 0);
-
     virtual void draw(SkyPainter* skyp);
 
-    virtual bool selected();
-
     void loadData(const QString& jsonPath);
-
-private:
-    QList<SkyObject*> m_meteorShowers;
 };
 
 #endif
