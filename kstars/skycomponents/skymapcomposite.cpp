@@ -49,6 +49,7 @@
 #include "satellitescomponent.h"
 #include "supernovaecomponent.h"
 #include "constellationartcomponent.h"
+#include "meteorshowerscomponent.h"
 #include "kscomet.h"
 #include "ksasteroid.h"
 #include "observinglist.h"
@@ -110,6 +111,8 @@ SkyMapComposite::SkyMapComposite(SkyComposite *parent ) :
     addComponent( m_Satellites       = new SatellitesComponent( this ), 7 );
     addComponent( m_Supernovae       = new SupernovaeComponent( this ), 7 );
 
+    addComponent( m_MeteorShowers    = new MeteorShowersComponent( this ), 7 );
+
     connect( this, SIGNAL( progressText( const QString & ) ),
              KStarsData::Instance(), SIGNAL( progressText( const QString & ) ) );
 }
@@ -154,9 +157,11 @@ void SkyMapComposite::update(KSNumbers *num )
     //13. Satellites
     m_Satellites->update( num );
     //14. Supernovae
-    m_Supernovae->update(num);
+    m_Supernovae->update( num );
     //15. Horizon
     m_Horizon->update( num );
+    //16. Meteor Showers
+    m_MeteorShowers->update( num );
 }
 
 void SkyMapComposite::updateSolarSystemBodies(KSNumbers *num )
@@ -264,6 +269,8 @@ void SkyMapComposite::draw( SkyPainter *skyp )
     m_Satellites->draw( skyp );
 
     m_Supernovae->draw(skyp);
+
+    m_MeteorShowers->draw(skyp);
 
     map->drawObjectLabels( labelObjects() );
 
@@ -388,8 +395,15 @@ SkyObject* SkyMapComposite::objectNearest( SkyPoint *p, double &maxrad ) {
     }
 
     rTry = maxrad;
-    oTry = m_Supernovae->objectNearest(p,rTry);
+    oTry = m_Supernovae->objectNearest(p, rTry);
     //qDebug()<<rTry<<rBest<<maxrad;
+    if ( rTry < rBest ) {
+        rBest = rTry;
+        oBest = oTry;
+    }
+
+    rTry = maxrad;
+    oTry = m_MeteorShowers->objectNearest(p, rTry);
     if ( rTry < rBest ) {
         rBest = rTry;
         oBest = oTry;
@@ -462,6 +476,8 @@ SkyObject* SkyMapComposite::findByName( const QString &name ) {
     o = m_CustomCatalogs->findByName( name );
     if ( o ) return o;
     o = m_CNames->findByName( name );
+    if ( o ) return o;
+    o = m_MeteorShowers->findByName( name );
     if ( o ) return o;
     o = m_Stars->findByName( name );
     if ( o ) return o;
@@ -616,6 +632,11 @@ const QList<SkyObject*>& SkyMapComposite::supernovae() const
     return m_Supernovae->objectList();
 }
 
+const QList<SkyObject*>& SkyMapComposite::meteorshower() const
+{
+    return m_MeteorShowers->objectList();
+}
+
 KSPlanet* SkyMapComposite::earth() {
     return m_SolarSystem->earth();
 }
@@ -656,6 +677,11 @@ SolarSystemComposite* SkyMapComposite::solarSystemComposite()
 SupernovaeComponent* SkyMapComposite::supernovaeComponent()
 {
     return m_Supernovae;
+}
+
+MeteorShowersComponent* SkyMapComposite::meteorShowersComponent()
+{
+    return m_MeteorShowers;
 }
 
 ArtificialHorizonComponent* SkyMapComposite::artificialHorizon()

@@ -50,6 +50,7 @@ class TargetListComponent;
 class SatellitesComponent;
 class SupernovaeComponent;
 class ConstellationArtComponent;
+class MeteorShowersComponent;
 
 class DeepSkyObject;
 class KSPlanetBase;
@@ -172,6 +173,7 @@ public:
     FlagComponent* flags();
     SatellitesComponent* satellites();
     SupernovaeComponent* supernovaeComponent();
+    MeteorShowersComponent* meteorShowersComponent();
     ArtificialHorizonComponent* artificialHorizon();
 
     //Accessors for StarComponent
@@ -185,6 +187,7 @@ public:
     const QList<SkyObject*>& asteroids() const;
     const QList<SkyObject*>& comets() const;
     const QList<SkyObject*>& supernovae() const;
+    const QList<SkyObject*>& meteorshower() const;
 
     KSPlanet* earth();
     KSPlanetBase* planet( int n );
@@ -228,6 +231,7 @@ private:
     TargetListComponent         *m_StarHopRouteList;
     SatellitesComponent         *m_Satellites;
     SupernovaeComponent         *m_Supernovae;
+    MeteorShowersComponent      *m_MeteorShowers;
 
     SkyMesh*                m_skyMesh;
     SkyLabeler*             m_skyLabeler;
