@@ -46,6 +46,7 @@ FindDialogUI::FindDialogUI( QWidget *parent ) : QFrame( parent ) {
     FilterType->addItem( i18n ("Constellations") );
     FilterType->addItem( i18n ("Supernovae") );
     FilterType->addItem( i18n ("Satellites") );
+    FilterType->addItem( i18n ("Meteor Showers") );
 
     SearchList->setMinimumWidth( 256 );
     SearchList->setMinimumHeight( 320 );
@@ -218,6 +219,9 @@ void FindDialog::filterByType() {
         break;
     case 12: //Satellites
         fModel->setStringList( data->skyComposite()->objectNames( SkyObject::SATELLITE ) );
+        break;
+    case 13: //Meteor Showers
+        fModel->setStringList( data->skyComposite()->objectNames( SkyObject::METEOR_SHOWER ) );
         break;
     }
 }
