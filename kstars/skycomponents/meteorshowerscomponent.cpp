@@ -84,4 +84,9 @@ void MeteorShowersComponent::loadData(const QString& jsonPath)
 
 void MeteorShowersComponent::draw(SkyPainter *skyp)
 {
+    if (!selected())
+        return;
+
+    foreach (SkyObject *o, m_ObjectList)
+        skyp->drawMeteorShower((MeteorShower*) o);
 }

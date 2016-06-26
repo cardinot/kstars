@@ -63,7 +63,7 @@ public:
     /**
      * Destructor
      */
-    virtual ~MeteorShower();
+    virtual ~MeteorShower() {}
 
     /**
      * @return a clone of this object

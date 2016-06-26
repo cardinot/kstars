@@ -50,6 +50,7 @@ public:
     virtual void drawHorizon( bool filled, SkyPoint *labelPoint = 0, bool *drawLabel = 0);
     virtual void drawSatellite( Satellite* sat );
     virtual bool drawSupernova(Supernova* sup);
+    virtual bool drawMeteorShower(MeteorShower* ms);
     void drawText( int x, int y, const QString text, QFont font, QColor color );
     virtual bool drawConstellationArtImage(ConstellationsArt *obj);
 private:

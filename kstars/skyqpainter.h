@@ -86,6 +86,7 @@ public:
     virtual void drawDeepSkySymbol(const QPointF& pos, int type, float size, float e,
                                          float positionAngle);
     virtual bool drawSupernova(Supernova* sup);
+    virtual bool drawMeteorShower(MeteorShower* ms);
     ///This function exists so that we can draw other objects (e.g., planets) as point sources.
     virtual void drawPointSource(const QPointF& pos, float size, char sp = 'A');
     virtual bool drawConstellationArtImage(ConstellationsArt *obj);

@@ -35,6 +35,7 @@ class LineList;
 class LineListLabel;
 class Satellite;
 class Supernova;
+class MeteorShower;
 class ConstellationsArt;
 
 
@@ -147,6 +148,10 @@ public:
     /** @short Draw a Supernova
      */
     virtual bool drawSupernova(Supernova* sup) = 0;
+
+    /** @short Draw a radiant (meteor shower)
+     */
+    virtual bool drawMeteorShower(MeteorShower* ms) = 0;
 
     virtual void drawHorizon( bool filled, SkyPoint *labelPoint = 0, bool *drawLabel = 0) = 0;
 

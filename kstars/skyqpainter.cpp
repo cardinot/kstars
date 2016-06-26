@@ -39,6 +39,7 @@
 #include "skyobjects/trailobject.h"
 #include "skyobjects/satellite.h"
 #include "skyobjects/supernova.h"
+#include "skyobjects/meteorshower.h"
 #include "skyobjects/constellationsart.h"
 #include "projections/projector.h"
 #include "ksutils.h"
@@ -867,3 +868,18 @@ bool SkyQPainter::drawSupernova(Supernova* sup)
     return true;
 }
 
+bool SkyQPainter::drawMeteorShower(MeteorShower *ms)
+{
+    if (!m_proj->checkVisibility(ms))
+        return false;
+
+    bool visible = false;
+    QPointF pos = m_proj->toScreen(ms, true, &visible);
+    if (!visible || !m_proj->onScreen(pos))
+        return false;
+
+    setPen(KStarsData::Instance()->colorScheme()->colorNamed("MeteorShowerColor"));
+    drawLine(QPoint(pos.x() - 2.0, pos.y()), QPoint(pos.x() + 2.0, pos.y()));
+    drawLine(QPoint(pos.x(), pos.y() - 2.0), QPoint(pos.x(), pos.y() + 2.0));
+    return true;
+}

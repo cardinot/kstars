@@ -151,10 +151,6 @@ MeteorShower::MeteorShower(const QVariantMap& map)
     m_status = UNDEFINED;
 }
 
-MeteorShower::~MeteorShower()
-{
-}
-
 MeteorShower* MeteorShower::clone() const
 {
     Q_ASSERT(typeid(this) == typeid(static_cast<const MeteorShower*> (this)));
