@@ -920,6 +920,11 @@
       <whatsthis>Color of supernova</whatsthis>
       <default>#FFA500</default>
     </entry>
+    <entry name="MeteorShowerColor" type="String">
+      <label>Color of meteor shower</label>
+      <whatsthis>Color of meteor shower</whatsthis>
+      <default>#F5F613</default>
+    </entry>
     <entry name="UserLabelColor" type="String">
       <label>Color of user-added labels</label>
       <whatsthis>The color for user-added object labels.</whatsthis>
