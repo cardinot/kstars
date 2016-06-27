@@ -30,6 +30,7 @@ class DeepSkyObject;
 class KSMoon;
 class Satellite;
 class Supernova;
+class MeteorShower;
 
 /** @class KSPopupMenu
 	*The KStars Popup Menu.  The menu is sensitive to the 
@@ -109,6 +110,12 @@ public:
      * @param supernova the supernova which the menu describes.
      */
     void createSupernovaMenu(Supernova *supernova);
+
+    /**
+     * @short Create a popup menu for a meteor shower
+     * @param ms the meteor shower which the menu describes.
+     */
+    void createMeteorShowerMenu(MeteorShower *ms);
 
     /** @short Create a popup menu for empty sky.
      *

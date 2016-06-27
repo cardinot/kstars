@@ -90,6 +90,12 @@ private:
     dms m_driftDelta;               // drift of Dec. for each day from peak
     QString m_parentObj;            // parent object for meteor shower
     float m_pidx;                   // the population index
+
+    /**
+     * @brief initialize the popup menu
+     * @param pmenu
+     */
+    void initPopupMenu(KSPopupMenu* pmenu);
 };
 
 #endif

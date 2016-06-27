@@ -156,3 +156,8 @@ MeteorShower* MeteorShower::clone() const
     Q_ASSERT(typeid(this) == typeid(static_cast<const MeteorShower*> (this)));
     return new MeteorShower(*this);
 }
+
+void MeteorShower::initPopupMenu(KSPopupMenu* pmenu)
+{
+    pmenu->createMeteorShowerMenu(this);
+}

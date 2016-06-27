@@ -31,6 +31,7 @@
 #include "skyobjects/ksmoon.h"
 #include "skyobjects/satellite.h"
 #include "skyobjects/supernova.h"
+#include "skyobjects/meteorshower.h"
 #include "skycomponents/skymapcomposite.h"
 #include "skycomponents/flagcomponent.h"
 #include "skymap.h"
@@ -262,6 +263,12 @@ void KSPopupMenu::createSupernovaMenu(Supernova* supernova)
     float mag = supernova->mag();
     QString type = supernova->getType();
     initPopupMenu( supernova, name, i18n( "supernova" ), i18n("%1<sup>m</sup>, %2", mag, type) );
+}
+
+void KSPopupMenu::createMeteorShowerMenu(MeteorShower *ms)
+{
+    QString name = QString("%1 (%2)").arg(ms->name()).arg(ms->name2());
+    initPopupMenu(ms, name, i18n( "Meteor Shower" ), QString());
 }
 
 void KSPopupMenu::initPopupMenu( SkyObject *obj, QString name, QString type, QString info,
