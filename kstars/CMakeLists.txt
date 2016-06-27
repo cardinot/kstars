@@ -559,7 +559,13 @@ endif(INDI_FOUND)
 kconfig_add_kcfg_files(kstars_SRCS ${kstars_KCFG_SRCS})
 
 ki18n_wrap_ui(kstars_SRCS
-    ${indiui_SRCS} ${ui_SRCS} ${fitsui_SRCS} ${ekosui_SRCS} ${xplanetui_SRCS} ${kstars_optionsui_SRCS} ${kstars_dialogsui_SRCS}
+    ${indiui_SRCS}
+    ${ui_SRCS}
+    ${fitsui_SRCS}
+    ${ekosui_SRCS}
+    ${xplanetui_SRCS}
+    ${kstars_optionsui_SRCS}
+    ${kstars_dialogsui_SRCS}
     ${printingui_SRCS}
     auxiliary/thumbnailpicker.ui
     auxiliary/thumbnaileditor.ui
@@ -569,8 +575,7 @@ ki18n_wrap_ui(kstars_SRCS
     skycomponents/notifyupdatesui.ui
 )
 
-add_executable(kstars main.cpp)
-add_library( KStarsLib STATIC ${kstars_SRCS})
+add_library(KStarsLib STATIC ${kstars_SRCS})
 
 target_link_libraries(KStarsLib
     LibKSDataHandlers
@@ -621,12 +626,25 @@ endif(WCSLIB_FOUND)
 #    )
 #endif( OPENGL_FOUND )
 
+set (KSTARS_APP_SRCS
+    main.cpp
+)
+
+# add icon to application sources
+ecm_add_app_icon(KSTARS_APP_SRCS ICONS
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/16-apps-kstars.png
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/32-apps-kstars.png
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/48-apps-kstars.png
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/64-apps-kstars.png
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/128-apps-kstars.png
+)
+
+add_executable(kstars ${KSTARS_APP_SRCS})
 target_link_libraries(kstars KStarsLib)
 
 install(TARGETS kstars ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
-ecm_install_icons(${KDE_INSTALL_ICONDIR})
 install(PROGRAMS org.kde.kstars.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 install(FILES kstars.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR})
 install(FILES kstars.knsrc DESTINATION ${KDE_INSTALL_CONFDIR})
