@@ -147,6 +147,7 @@ MeteorShower::MeteorShower(const QVariantMap& map)
     setName(m_designation);
     setName2(m_showerID);
     setLongName(m_designation);
+    setMag(NaN::f);
 
     m_status = UNDEFINED;
 }
