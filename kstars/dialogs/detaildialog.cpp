@@ -49,6 +49,7 @@
 #include "skyobjects/kscomet.h"
 #include "skyobjects/ksasteroid.h"
 #include "skyobjects/supernova.h"
+#include "skyobjects/meteorshower.h"
 #include "skycomponents/catalogcomponent.h"
 #include "thumbnailpicker.h"
 #include "Options.h"
@@ -71,7 +72,7 @@
 DetailDialog::DetailDialog(SkyObject *o, const KStarsDateTime &ut, GeoLocation *geo, QWidget *parent ) :
     KPageDialog( parent ),
     selectedObject(o),
-    Data(0), DataComet(0), Pos(0), Links(0), Adv(0), Log(0)
+    Data(0), DataComet(0), DataMeteorShower(0), Pos(0), Links(0), Adv(0), Log(0)
 {
     setFaceType( Tabbed );
     setBackgroundRole( QPalette::Base );
@@ -258,6 +259,20 @@ void DetailDialog::createGeneralTab()
 
         break;
 
+    case SkyObject::METEOR_SHOWER: {
+        MeteorShower* ms = (MeteorShower*) selectedObject;
+        objecttyp = i18n("Meteor Showers");
+        Data->Names->setText(ms->name());
+        Data->Magnitude->setText("---");
+        Data->Distance->setText("---");
+
+        DataMeteorShower = new DataMeteorShowerWidget(this);
+        Data->IncludeData->layout()->addWidget(DataMeteorShower);
+        DataMeteorShower->fParent->setText(ms->getParentObject());
+        DataMeteorShower->fSpeed->setText(QString("%1 km/s").arg(ms->getSpeed()));
+        DataMeteorShower->fPidx->setText(QString("%1").arg(ms->getPopulationIdx()));
+        break;
+    }
     default: //deep-sky objects
         dso = (DeepSkyObject *)selectedObject;
 
@@ -1189,6 +1204,11 @@ DataWidget::DataWidget( QWidget *p ) : QFrame( p )
 }
 
 DataCometWidget::DataCometWidget( QWidget *p ) : QFrame( p )
+{
+    setupUi( this );
+}
+
+DataMeteorShowerWidget::DataMeteorShowerWidget( QWidget *p ) : QFrame( p )
 {
     setupUi( this );
 }

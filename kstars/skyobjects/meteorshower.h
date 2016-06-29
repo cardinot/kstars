@@ -76,6 +76,24 @@ public:
      */
     Status getStatus() { return m_status; }
 
+    /**
+     * @brief get meteor speed
+     * @return meteor speed
+     */
+    int getSpeed() { return m_speed; }
+
+    /**
+     * @brief get parent object
+     * @return partent object
+     */
+    QString getParentObject() { return m_parentObj; }
+
+    /**
+     * @brief get population index
+     * @return population index
+     */
+    float getPopulationIdx() { return m_pidx; }
+
 private:
     Status m_status;                // meteor shower status
 

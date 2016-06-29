@@ -32,6 +32,7 @@
 //UI headers
 #include "ui_details_data.h"
 #include "ui_details_data_comet.h"
+#include "ui_details_data_meteorshower.h"
 #include "ui_details_position.h"
 #include "ui_details_links.h"
 #include "ui_details_database.h"
@@ -48,6 +49,7 @@ class KStarsDateTime;
 
 class DataWidget;
 class DataCometWidget;
+class DataMeteorShowerWidget;
 class PositionWidget;
 class LinksWidget;
 class DatabaseWidget;
@@ -220,6 +222,7 @@ private:
 
     DataWidget *Data;
     DataCometWidget *DataComet;
+    DataMeteorShowerWidget *DataMeteorShower;
     PositionWidget *Pos;
     LinksWidget *Links;
     DatabaseWidget *Adv;
@@ -237,6 +240,12 @@ class DataCometWidget : public QFrame, public Ui::DetailsDataComet
 {
 public:
     explicit DataCometWidget( QWidget *parent=0 );
+};
+
+class DataMeteorShowerWidget : public QFrame, public Ui::DetailsDataMeteorShower
+{
+public:
+    explicit DataMeteorShowerWidget( QWidget *parent=0 );
 };
 
 class PositionWidget : public QFrame, public Ui::DetailsPosition

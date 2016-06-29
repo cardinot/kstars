@@ -405,6 +405,7 @@ set(kstars_dialogsui_SRCS
     dialogs/details_database.ui
     dialogs/details_data.ui
     dialogs/details_data_comet.ui
+    dialogs/details_data_meteorshower.ui
     dialogs/details_links.ui
     dialogs/details_log.ui
     dialogs/details_position.ui
