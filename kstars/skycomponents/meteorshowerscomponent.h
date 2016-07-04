@@ -40,6 +40,8 @@ public:
 
     virtual ~MeteorShowersComponent();
 
+    virtual void update(KSNumbers*);
+
     virtual void draw(SkyPainter* skyp);
 
     void loadData(const QString& jsonPath);

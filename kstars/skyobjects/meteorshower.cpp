@@ -24,8 +24,8 @@ MeteorShower::MeteorShower(const QVariantMap& map)
     : SkyObject(SkyObject::METEOR_SHOWER)
     , m_status(INVALID)
     , m_speed(0)
-    , m_radiantAlpha(0)
-    , m_radiantDelta(0)
+    , m_alpha(0)
+    , m_delta(0)
     , m_driftAlpha(0)
     , m_driftDelta(0)
     , m_pidx(0)
@@ -42,14 +42,14 @@ MeteorShower::MeteorShower(const QVariantMap& map)
     m_showerID = map.value("showerID").toString();
     m_designation  = map.value("designation").toString();
     m_speed = map.value("speed").toInt();
-    m_radiantAlpha = dms(map.value("radiantAlpha").toString());
-    m_radiantDelta = dms(map.value("radiantDelta").toString());
+    m_alpha = dms(map.value("radiantAlpha").toString());
+    m_delta = dms(map.value("radiantDelta").toString());
     m_parentObj = map.value("parentObj").toString();
     m_pidx = map.value("pidx").toFloat();
 
     // the catalog (IMO) will give us the drift for a five-day interval from peak
-    m_driftAlpha = dms(map.value("driftAlpha").toFloat() / 5.f);
-    m_driftDelta = dms(map.value("driftDelta").toFloat() / 5.f);
+    m_driftAlpha = map.value("driftAlpha").toFloat() / 5.f;
+    m_driftDelta = map.value("driftDelta").toFloat() / 5.f;
 
     const int genericYear = 1000;
 
@@ -61,9 +61,9 @@ MeteorShower::MeteorShower(const QVariantMap& map)
         Activity d;
         d.zhr = activityMap.value("zhr").toInt();
 
-        QStringList variable = activityMap.value("variable").toString().split("-");
         if (d.zhr == -1) // is variable
         {
+            QStringList variable = activityMap.value("variable").toString().split("-");
             bool ok = variable.size() == 2;
             for (int i=0; i < 2 && ok; i++)
             {
@@ -143,7 +143,7 @@ MeteorShower::MeteorShower(const QVariantMap& map)
     }
 
     // SkyObject set-up
-    set(m_radiantAlpha, m_radiantDelta);
+    set(m_alpha, m_delta);
     setName(m_designation);
     setName2(m_showerID);
     setLongName(m_designation);
@@ -161,4 +161,88 @@ MeteorShower* MeteorShower::clone() const
 void MeteorShower::initPopupMenu(KSPopupMenu* pmenu)
 {
     pmenu->createMeteorShowerMenu(this);
+}
+
+MeteorShower::Activity MeteorShower::findGenericData(QDate date, bool& found) const
+{
+    int year = date.year();
+    Activity g = m_activities.at(0);
+
+    // Fix the 'generic year'!
+    // Handling cases in which the shower starts in the current year and
+    // ends in the next year; or when it started in the last year...
+    if (g.start.year() != g.finish.year()) // edge case?
+    {
+        // trying the current year with the next year
+        g.start.setDate(year, g.start.month(), g.start.day());
+        g.finish.setDate(year + 1, g.finish.month(), g.finish.day());
+        found = date >= g.start && date <= g.finish;
+
+        if (!found)
+        {
+            // trying the last year with the current year
+            g.start.setDate(year - 1, g.start.month(), g.start.day());
+            g.finish.setDate(year, g.finish.month(), g.finish.day());
+            found = date >= g.start && date <= g.finish;
+        }
+    }
+    else
+    {
+        g.start.setDate(year, g.start.month(), g.start.day());
+        g.finish.setDate(year, g.finish.month(), g.finish.day());
+        found = date >= g.start && date <= g.finish;
+    }
+
+    if (!found)
+    {
+        return Activity();
+    }
+
+    g.year = g.start.year();
+    int peakYear = g.peak.year() == g.start.year() ? g.start.year() : g.finish.year();
+    g.peak.setDate(peakYear, g.peak.month(), g.peak.day());
+
+    return g;
+}
+
+MeteorShower::Activity MeteorShower::findConfirmedData(QDate date, bool &found) const
+{
+    const int activitiesSize = m_activities.size();
+    for (int i = 1; i < activitiesSize; ++i)
+    {
+        const Activity& a = m_activities.at(i);
+        if (date.operator >=(a.start) && date.operator <=(a.finish))
+        {
+            found = true;
+            return a;
+        }
+    }
+    return Activity();
+}
+
+void MeteorShower::update()
+{
+    if (m_status == INVALID)
+        return;
+
+    bool found = false;
+    QDate currentDate = QDate::fromJulianDay(getLastPrecessJD());
+    m_activity = findConfirmedData(currentDate, found);
+    m_status = found ? INACTIVE : ACTIVE_CONFIRMED;
+    if (!found)
+    {
+        m_activity = findGenericData(currentDate, found);
+        m_status = found ? INACTIVE : ACTIVE_GENERIC;
+    }
+
+    // fix the radiant position (considering drift)
+    m_alpha = m_peakAlpha;
+    m_delta = m_peakDelta;
+    if (found)
+    {
+        double daysToPeak = getLastPrecessJD() - m_activity.peak.toJulianDay();
+        m_alpha.setD(m_alpha.degree() + m_driftAlpha * daysToPeak);
+        m_delta.setD(m_delta.degree() + m_driftDelta * daysToPeak);
+        set(m_alpha, m_delta);
+    }
 }

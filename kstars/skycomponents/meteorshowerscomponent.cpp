@@ -82,6 +82,15 @@ void MeteorShowersComponent::loadData(const QString& jsonPath)
     }
 }
 
+void MeteorShowersComponent::update(KSNumbers*)
+{
+    if (!selected())
+        return;
+
+    foreach (SkyObject* ms, m_ObjectList)
+        ((MeteorShower*) ms)->update();
+}
+
 void MeteorShowersComponent::draw(SkyPainter *skyp)
 {
     if (!selected())
