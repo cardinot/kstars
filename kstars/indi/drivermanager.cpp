@@ -122,29 +122,18 @@ DriverManager::DriverManager()
     QObject::connect(ui->clientTreeWidget, SIGNAL(itemClicked(QTreeWidgetItem *, int)), this, SLOT(updateClientTab()));
     QObject::connect(ui->localTreeWidget, SIGNAL(expanded(const QModelIndex &)), this, SLOT(resizeDeviceColumn()));
 
+    if (Options::indiDriversDir().isEmpty())
+        Options::setIndiDriversDir(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "indi", QStandardPaths::LocateDirectory));
+
     readXMLDrivers();
 
     readINDIHosts();
 
     updateCustomDrivers();
-}
 
-void DriverManager::closeEvent(QCloseEvent * /*event*/)
-{
-    QAction *a = KStars::Instance()->actionCollection()->action( "show_device_manager" );
-    a->setChecked(false);
-}
-
-void DriverManager::hideEvent(QHideEvent * /*event*/)
-{
-    QAction *a = KStars::Instance()->actionCollection()->action( "show_device_manager" );
-    a->setChecked(false);
-}
-
-void DriverManager::showEvent(QShowEvent * /*event*/)
-{
-    QAction *a = KStars::Instance()->actionCollection()->action( "show_device_manager" );
-    a->setChecked(true);
+    #ifdef Q_OS_WIN
+    ui->localTreeWidget->setEnabled(false);
+    #endif
 }
 
 void DriverManager::processDeviceStatus(DriverInfo *dv)
@@ -968,7 +957,7 @@ bool DriverManager::readXMLDrivers()
         if (fileInfo.fileName() == "drivers.xml")
         {
             // Let first attempt to load the local version of drivers.xml
-            driverName = KSPaths::writableLocation(QStandardPaths::GenericDataLocation) + QDir::separator() + "drivers.xml";
+            driverName = KSPaths::writableLocation(QStandardPaths::GenericDataLocation) + "drivers.xml";
 
             // If found, we continue, otherwise, we load the system file
             if (driverName.isEmpty() == false && QFile(driverName).exists())
@@ -1449,7 +1438,7 @@ void DriverManager::saveHosts()
     QFile file;
     QString hostData;
 
-    file.setFileName( KSPaths::writableLocation(QStandardPaths::GenericDataLocation) + QDir::separator() + "indihosts.xml" ) ; //determine filename in local user KDE directory tree.
+    file.setFileName( KSPaths::writableLocation(QStandardPaths::GenericDataLocation) + "indihosts.xml" ) ; //determine filename in local user KDE directory tree.
 
     if ( !file.open( QIODevice::WriteOnly))
     {
