@@ -40,6 +40,8 @@ public:
 
     virtual ~MeteorShowersComponent();
 
+    virtual bool selected();
+
     virtual void update(KSNumbers*);
 
     virtual void draw(SkyPainter* skyp);

@@ -32,6 +32,7 @@
         <file>supernovae.png</file>
         <file>xplanet.png</file>
         <file>advanced.png</file>
+        <file>meteorshowers.png</file>
     </qresource>
     <qresource prefix="/kconfig">
         <file>kstars.knsrc</file>

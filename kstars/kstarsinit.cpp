@@ -535,6 +535,10 @@ void KStars::initActions() {
         << i18nc("Toggle supernovae in the display", "Supernovae" )
         << QIcon::fromTheme("kstars_supernovae" , QIcon(":/icons/supernovae.png"))
         << ToolTip( i18n("Toggle supernovae") );
+    actionCollection()->add<KToggleAction>("show_meteorshowers", this, SLOT( slotViewToolBar() ) )
+        << i18nc("Toggle meteor showers in the display", "Meteor Showers" )
+        << QIcon::fromTheme("kstars_meteorshowers" , QIcon(":/icons/meteorshowers.png"))
+        << ToolTip( i18n("Toggle meteor showers") );
 
 #ifdef HAVE_INDI
     // ==== INDIToolBar actions ================

@@ -222,6 +222,11 @@ void KStars::slotViewToolBar() {
         if ( kcd ) {
             opssupernovae->kcfg_ShowSupernovae->setChecked ( a->isChecked() ) ;
         }
+    } else if ( a == actionCollection()->action( "show_meteorshowers" ) ) {
+        Options::setShowMeteorShowers( a->isChecked() );
+        //if ( kcd ) {
+        //    opsmeteorshowers->kcfg_ShowMeteorShowers->setChecked ( a->isChecked() ) ;
+        //}
     }
 
     // update time for all objects because they might be not initialized

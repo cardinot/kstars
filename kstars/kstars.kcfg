@@ -369,6 +369,11 @@
       <whatsthis>Toggle supernova alerts.</whatsthis>
       <default>true</default>
     </entry>
+    <entry name="ShowMeteorShowers" type="Bool">
+      <label>Draw meteor showers in the sky map?</label>
+      <whatsthis>Toggle whether meteor showers are drawn in the sky map.</whatsthis>
+      <default>false</default>
+    </entry>
     <entry name="MagnitudeLimitAlertSupernovae" type="Double">
        <label>Set magnitude limit for supernovae to be alerted</label>
        <whatsthis>Set magnitude limit for supernovae to be alerted.</whatsthis>

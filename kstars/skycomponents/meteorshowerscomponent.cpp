@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "meteorshowerscomponent.h"
+#include "Options.h"
 #include "skypainter.h"
 
 #include <QDebug>
@@ -35,6 +36,11 @@ MeteorShowersComponent::MeteorShowersComponent(SkyComposite* parent)
 
 MeteorShowersComponent::~MeteorShowersComponent()
 {
+}
+
+bool MeteorShowersComponent::selected()
+{
+    return Options::showMeteorShowers();
 }
 
 void MeteorShowersComponent::loadData(const QString& jsonPath)
