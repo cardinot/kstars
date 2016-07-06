@@ -329,6 +329,7 @@ void KStars::changeViewOption( const QString &op, const QString &val ) {
     if ( op == "ShowSolarSystem" && bOk ) Options::setShowSolarSystem( bVal );
     if ( op == "ShowDeepSky"     && bOk ) Options::setShowDeepSky( bVal );
     if ( op == "ShowSupernovae"     && bOk ) Options::setShowSupernovae( bVal );
+    if ( op == "ShowMeteorShowers"  && bOk ) Options::setShowMeteorShowers( bVal );
     if ( op == "ShowStarNames"      && bOk ) Options::setShowStarNames(      bVal );
     if ( op == "ShowStarMagnitudes" && bOk ) Options::setShowStarMagnitudes( bVal );
     if ( op == "ShowAsteroidNames"  && bOk ) Options::setShowAsteroidNames(  bVal );
