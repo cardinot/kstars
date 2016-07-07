@@ -24,11 +24,11 @@ MeteorShower::MeteorShower(const QVariantMap& map)
     : SkyObject(SkyObject::METEOR_SHOWER)
     , m_status(INVALID)
     , m_speed(0)
-    , m_alpha(0)
-    , m_delta(0)
     , m_driftAlpha(0)
     , m_driftDelta(0)
     , m_pidx(0)
+    , m_alpha(0)
+    , m_delta(0)
 {
     // return initialized if the mandatory fields are not present
     if(!map.contains("showerID") || !map.contains("activity")
