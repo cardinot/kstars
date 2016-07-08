@@ -228,11 +228,11 @@ void MeteorShower::update()
     bool found = false;
     QDate currentDate = QDate::fromJulianDay(getLastPrecessJD());
     m_activity = findConfirmedData(currentDate, found);
-    m_status = found ? INACTIVE : ACTIVE_CONFIRMED;
+    m_status = found ? ACTIVE_CONFIRMED : INACTIVE;
     if (!found)
     {
         m_activity = findGenericData(currentDate, found);
-        m_status = found ? INACTIVE : ACTIVE_GENERIC;
+        m_status = found ? ACTIVE_GENERIC : INACTIVE;
     }
 
     // fix the radiant position (considering drift)
