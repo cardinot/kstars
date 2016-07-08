@@ -77,9 +77,14 @@ public:
     void update();
 
     /**
-     * @return current meteor shower status
+     * @return current meteor shower status (enum)
      */
     Status getStatus() { return m_status; }
+
+    /**
+     * @return current meteor shower status (string)
+     */
+    QString getStatusStr();
 
     /**
      * @brief get meteor speed

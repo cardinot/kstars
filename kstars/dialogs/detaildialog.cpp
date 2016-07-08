@@ -269,6 +269,7 @@ void DetailDialog::createGeneralTab()
 
         DataMeteorShower = new DataMeteorShowerWidget(this);
         Data->IncludeData->layout()->addWidget(DataMeteorShower);
+        DataMeteorShower->fStatus->setText(ms->getStatusStr());
         DataMeteorShower->fParent->setText(ms->getParentObject());
         DataMeteorShower->fSpeed->setText(QString("%1 km/s").arg(ms->getSpeed()));
         DataMeteorShower->fPidx->setText(QString("%1").arg(ms->getPopulationIdx()));

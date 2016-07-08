@@ -246,3 +246,17 @@ void MeteorShower::update()
         set(m_alpha, m_delta);
     }
 }
+
+QString MeteorShower::getStatusStr()
+{
+    switch (m_status) {
+        case INACTIVE:
+            return i18n("Inactive");
+        case ACTIVE_CONFIRMED:
+            return i18n("Active (confirmed)");
+        case ACTIVE_GENERIC:
+            return i18n("Active (generic)");
+        default:
+            return i18n("Invalid");
+    }
+}
