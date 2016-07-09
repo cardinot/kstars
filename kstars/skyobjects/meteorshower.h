@@ -121,8 +121,6 @@ private:
 
     // current information
     Activity m_activity;            // current activity
-    dms m_alpha;                    // current radiant's R.A.
-    dms m_delta;                    // current radiant's Dec.
 
     /**
      * @brief initialize the popup menu

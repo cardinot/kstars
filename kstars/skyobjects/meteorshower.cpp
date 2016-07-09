@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "kstarsdata.h"
 #include "meteorshower.h"
 
 #include <typeinfo>
@@ -24,11 +25,11 @@ MeteorShower::MeteorShower(const QVariantMap& map)
     : SkyObject(SkyObject::METEOR_SHOWER)
     , m_status(INVALID)
     , m_speed(0)
+    , m_peakAlpha(0)
+    , m_peakDelta(0)
     , m_driftAlpha(0)
     , m_driftDelta(0)
     , m_pidx(0)
-    , m_alpha(0)
-    , m_delta(0)
 {
     // return initialized if the mandatory fields are not present
     if(!map.contains("showerID") || !map.contains("activity")
@@ -42,8 +43,8 @@ MeteorShower::MeteorShower(const QVariantMap& map)
     m_showerID = map.value("showerID").toString();
     m_designation  = map.value("designation").toString();
     m_speed = map.value("speed").toInt();
-    m_alpha = dms(map.value("radiantAlpha").toString());
-    m_delta = dms(map.value("radiantDelta").toString());
+    m_peakAlpha = dms(map.value("radiantAlpha").toString());
+    m_peakDelta = dms(map.value("radiantDelta").toString());
     m_parentObj = map.value("parentObj").toString();
     m_pidx = map.value("pidx").toFloat();
 
@@ -143,7 +144,7 @@ MeteorShower::MeteorShower(const QVariantMap& map)
     }
 
     // SkyObject set-up
-    set(m_alpha, m_delta);
+    set(m_peakAlpha, m_peakDelta);
     setName(m_designation);
     setName2(m_showerID);
     setLongName(m_designation);
@@ -222,35 +223,31 @@ MeteorShower::Activity MeteorShower::findConfirmedData(QDate date, bool &found) 
 
 void MeteorShower::update()
 {
-    if (m_status == INVALID)
+    if (m_status == INVALID) {
         return;
+    }
 
     bool found = false;
-    QDate currentDate = QDate::fromJulianDay(getLastPrecessJD());
-    m_status = INACTIVE;
-    m_alpha = m_peakAlpha;
-    m_delta = m_peakDelta;
+    QDate currentDate = KStarsData::Instance()->ut().date();
 
     m_activity = findConfirmedData(currentDate, found);
-    if (found)
-    {
+    if (found) {
         m_status = ACTIVE_CONFIRMED;
-    }
-    else
-    {
+    } else {
         m_activity = findGenericData(currentDate, found);
+        m_status = found ? ACTIVE_GENERIC : INACTIVE;
     }
 
-    if (found)
-    {
-        m_status = ACTIVE_GENERIC;
-        // fix the radiant position (considering drift)
-        double daysToPeak = getLastPrecessJD() - m_activity.peak.toJulianDay();
-        m_alpha.setD(m_alpha.degree() + m_driftAlpha * daysToPeak);
-        m_delta.setD(m_delta.degree() + m_driftDelta * daysToPeak);
+    // fix the radiant position (considering drift)
+    dms alpha = m_peakAlpha;
+    dms delta = m_peakDelta;
+    if (found) {
+        double daysToPeak = currentDate.toJulianDay() - m_activity.peak.toJulianDay();
+        alpha.setD(m_peakAlpha.degree() + m_driftAlpha * daysToPeak);
+        delta.setD(m_peakDelta.degree() + m_driftDelta * daysToPeak);
     }
-
-    set(m_alpha, m_delta);
+    setRA(alpha);
+    setDec(delta);
 }
 
 QString MeteorShower::getStatusStr()
