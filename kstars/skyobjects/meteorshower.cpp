@@ -227,24 +227,30 @@ void MeteorShower::update()
 
     bool found = false;
     QDate currentDate = QDate::fromJulianDay(getLastPrecessJD());
-    m_activity = findConfirmedData(currentDate, found);
-    m_status = found ? ACTIVE_CONFIRMED : INACTIVE;
-    if (!found)
-    {
-        m_activity = findGenericData(currentDate, found);
-        m_status = found ? ACTIVE_GENERIC : INACTIVE;
-    }
-
-    // fix the radiant position (considering drift)
+    m_status = INACTIVE;
     m_alpha = m_peakAlpha;
     m_delta = m_peakDelta;
+
+    m_activity = findConfirmedData(currentDate, found);
     if (found)
     {
+        m_status = ACTIVE_CONFIRMED;
+    }
+    else
+    {
+        m_activity = findGenericData(currentDate, found);
+    }
+
+    if (found)
+    {
+        m_status = ACTIVE_GENERIC;
+        // fix the radiant position (considering drift)
         double daysToPeak = getLastPrecessJD() - m_activity.peak.toJulianDay();
         m_alpha.setD(m_alpha.degree() + m_driftAlpha * daysToPeak);
         m_delta.setD(m_delta.degree() + m_driftDelta * daysToPeak);
-        set(m_alpha, m_delta);
     }
+
+    set(m_alpha, m_delta);
 }
 
 QString MeteorShower::getStatusStr()
