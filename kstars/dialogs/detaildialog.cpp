@@ -270,9 +270,16 @@ void DetailDialog::createGeneralTab()
         DataMeteorShower = new DataMeteorShowerWidget(this);
         Data->IncludeData->layout()->addWidget(DataMeteorShower);
         DataMeteorShower->fStatus->setText(ms->getStatusStr());
-        DataMeteorShower->fParent->setText(ms->getParentObject());
-        DataMeteorShower->fSpeed->setText(QString("%1 km/s").arg(ms->getSpeed()));
-        DataMeteorShower->fPidx->setText(QString("%1").arg(ms->getPopulationIdx()));
+
+        if (!ms->getParentObject().isEmpty())
+            DataMeteorShower->fParent->setText(ms->getParentObject());
+
+        if (ms->getSpeed())
+            DataMeteorShower->fSpeed->setText(QString("%1 km/s").arg(ms->getSpeed()));
+
+        if (ms->getPopulationIdx())
+            DataMeteorShower->fPidx->setText(QString("%1").arg(ms->getPopulationIdx()));
+
         break;
     }
     default: //deep-sky objects
