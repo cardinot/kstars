@@ -242,7 +242,8 @@ void MeteorShower::update()
     dms alpha = m_peakAlpha;
     dms delta = m_peakDelta;
     if (found) {
-        double daysToPeak = currentDate.toJulianDay() - m_activity.peak.toJulianDay();
+        double daysToPeak = (KStarsData::Instance()->ut().toUTC().toMSecsSinceEpoch()
+                             - QDateTime(m_activity.peak).toMSecsSinceEpoch()) / 86400000.;
         alpha.setD(m_peakAlpha.degree() + m_driftAlpha * daysToPeak);
         delta.setD(m_peakDelta.degree() + m_driftDelta * daysToPeak);
     }
