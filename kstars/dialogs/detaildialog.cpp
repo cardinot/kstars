@@ -271,14 +271,44 @@ void DetailDialog::createGeneralTab()
         Data->IncludeData->layout()->addWidget(DataMeteorShower);
         DataMeteorShower->fStatus->setText(ms->getStatusStr());
 
-        if (!ms->getParentObject().isEmpty())
-            DataMeteorShower->fParent->setText(ms->getParentObject());
+        DataMeteorShower->fDrift->setText(QString("%1/%2")
+                .arg(dms(ms->getRadiantDriftRA()).toHMSString())
+                .arg(dms(ms->getRadiantDriftDec()).toDMSString()));
 
         if (ms->getSpeed())
             DataMeteorShower->fSpeed->setText(QString("%1 km/s").arg(ms->getSpeed()));
 
+        if (!ms->getParentObject().isEmpty())
+            DataMeteorShower->fParent->setText(ms->getParentObject());
+
         if (ms->getPopulationIdx())
-            DataMeteorShower->fPidx->setText(QString("%1").arg(ms->getPopulationIdx()));
+            DataMeteorShower->fPidx->setText(QString::number(ms->getPopulationIdx()));
+
+        // activity info
+        if (ms->getStatus() != MeteorShower::INACTIVE)
+        {
+            MeteorShower::Activity a = ms->getActivity();
+
+            DataMeteorShower->fPeak->setText(a.peak.toString("d MMMM"));
+
+            if (a.zhr > 0) {
+                DataMeteorShower->fZHR->setText(QString::number(a.zhr));
+            } else if (a.variable.size() == 2) {
+                DataMeteorShower->fZHR->setText(QString("%1-%2")
+                    .arg(a.variable.at(0)).arg(a.variable.at(1)));
+            }
+
+            if (a.start.month() == a.finish.month()) {
+                DataMeteorShower->fActivity->setText(QString("%1 - %2 %3")
+                                                     .arg(a.start.day())
+                                                     .arg(a.finish.day())
+                                                     .arg(a.start.toString("MMMM")));
+            } else {
+                DataMeteorShower->fActivity->setText(QString("%1: %2 - %3")
+                                                     .arg(a.start.toString("d MMMM"))
+                                                     .arg(a.finish.toString("d MMMM")));
+            }
+        }
 
         break;
     }
