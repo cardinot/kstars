@@ -87,20 +87,32 @@ public:
     QString getStatusStr();
 
     /**
-     * @brief get meteor speed
+     * @return the current meteor shower activity
+     */
+    Activity getActivity() { return m_activity; }
+
+    /**
      * @return meteor speed
      */
     int getSpeed() { return m_speed; }
 
     /**
-     * @brief get parent object
-     * @return partent object
+     * @return the radiant drift per day in degrees
+     */
+    float getRadiantDriftRA() { return m_driftAlpha; }
+
+    /**
+     * @return the radiant drift per day in degrees
+     */
+    float getRadiantDriftDec() { return m_driftDelta; }
+
+    /**
+     * @return parent object
      */
     QString getParentObject() { return m_parentObj; }
 
     /**
-     * @brief get population index
-     * @return population index
+     * @return the population index
      */
     float getPopulationIdx() { return m_pidx; }
 
