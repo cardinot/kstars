@@ -61,6 +61,7 @@ class EyepieceField;
 
 class OpsCatalog;
 class OpsGuides;
+class OpsMeteorShowers;
 class OpsSolarSystem;
 class OpsSatellites;
 class OpsSupernovae;
@@ -703,6 +704,7 @@ private:
 
     OpsCatalog *opcatalog;
     OpsGuides *opguides;
+    OpsMeteorShowers *opsmeteorshowers;
     OpsSolarSystem *opsolsys;
     OpsSatellites *opssatellites;
     OpsSupernovae *opssupernovae;

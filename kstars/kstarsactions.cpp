@@ -58,6 +58,7 @@
 #include "options/opssupernovae.h"
 #include "options/opscolors.h"
 #include "options/opsadvanced.h"
+#include "options/opsmeteorshowers.h"
 
 #include "Options.h"
 #include "kstars.h"
@@ -220,13 +221,13 @@ void KStars::slotViewToolBar() {
     } else if ( a == actionCollection()->action( "show_supernovae" ) ) {
         Options::setShowSupernovae( a->isChecked() );
         if ( kcd ) {
-            opssupernovae->kcfg_ShowSupernovae->setChecked ( a->isChecked() ) ;
+            opssupernovae->kcfg_ShowSupernovae->setChecked( a->isChecked() );
         }
     } else if ( a == actionCollection()->action( "show_meteorshowers" ) ) {
         Options::setShowMeteorShowers( a->isChecked() );
-        //if ( kcd ) {
-        //    opsmeteorshowers->kcfg_ShowMeteorShowers->setChecked ( a->isChecked() ) ;
-        //}
+        if ( kcd ) {
+            opsmeteorshowers->kcfg_ShowMeteorShowers->setChecked( a->isChecked() );
+        }
     }
 
     // update time for all objects because they might be not initialized
@@ -656,11 +657,13 @@ void KStars::slotViewOps() {
     opssupernovae= new OpsSupernovae();
     opcolors     = new OpsColors();
     opadvanced   = new OpsAdvanced();
+    opsmeteorshowers = new OpsMeteorShowers();
 
     dialog->addPage(opcatalog, i18n("Catalogs"), "kstars_catalog");
     dialog->addPage(opsolsys, i18n("Solar System"), "kstars_solarsystem");
     dialog->addPage(opssatellites, i18n("Satellites"), "kstars_satellites");
     dialog->addPage(opssupernovae, i18n("Supernovae"), "kstars_supernovae");
+    dialog->addPage(opsmeteorshowers, i18n("Meteor Showers"), "kstars_meteorshowers");
     dialog->addPage(opguides, i18n("Guides"), "kstars_guides");
     dialog->addPage(opcolors, i18n("Colors"), "kstars_colors");
 
