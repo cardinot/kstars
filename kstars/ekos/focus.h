@@ -325,6 +325,7 @@ signals:
 
 private:
     void drawHFRPlot();
+    void drawProfilePlot();
     void getAbsFocusPosition();
     void autoFocusAbs();
     void autoFocusRel();
@@ -436,6 +437,10 @@ private:
     QCustomPlot *customPlot;
     // V-Curve graph
     QCPGraph *v_graph;
+
+    // Last gaussian fit values
+    QVector<double> lastGaus;
+    QVector<double> lastGausRange;
 
     QVector<double> hfr_position, hfr_value;
 

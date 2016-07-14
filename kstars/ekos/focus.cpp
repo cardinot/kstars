@@ -126,6 +126,34 @@ Focus::Focus()
 
     focusType = FOCUS_MANUAL;
 
+    profilePlot->setBackground(QBrush(Qt::black));
+    profilePlot->xAxis->setBasePen(QPen(Qt::white, 1));
+    profilePlot->yAxis->setBasePen(QPen(Qt::white, 1));
+    profilePlot->xAxis->grid()->setPen(QPen(QColor(140, 140, 140), 1, Qt::DotLine));
+    profilePlot->yAxis->grid()->setPen(QPen(QColor(140, 140, 140), 1, Qt::DotLine));
+    profilePlot->xAxis->grid()->setSubGridPen(QPen(QColor(80, 80, 80), 1, Qt::DotLine));
+    profilePlot->yAxis->grid()->setSubGridPen(QPen(QColor(80, 80, 80), 1, Qt::DotLine));
+    profilePlot->xAxis->grid()->setZeroLinePen(Qt::NoPen);
+    profilePlot->yAxis->grid()->setZeroLinePen(Qt::NoPen);
+    profilePlot->xAxis->setBasePen(QPen(Qt::white, 1));
+    profilePlot->yAxis->setBasePen(QPen(Qt::white, 1));
+    profilePlot->xAxis->setTickPen(QPen(Qt::white, 1));
+    profilePlot->yAxis->setTickPen(QPen(Qt::white, 1));
+    profilePlot->xAxis->setSubTickPen(QPen(Qt::white, 1));
+    profilePlot->yAxis->setSubTickPen(QPen(Qt::white, 1));
+    profilePlot->xAxis->setTickLabelColor(Qt::white);
+    profilePlot->yAxis->setTickLabelColor(Qt::white);
+    profilePlot->xAxis->setLabelColor(Qt::white);
+    profilePlot->yAxis->setLabelColor(Qt::white);
+
+    profilePlot->addGraph();
+    profilePlot->graph(0)->setLineStyle(QCPGraph::lsLine);
+    profilePlot->graph(0)->setPen(QPen(Qt::red, 2));
+
+    profilePlot->addGraph();
+    profilePlot->graph(1)->setLineStyle(QCPGraph::lsLine);
+    profilePlot->graph(1)->setPen(QPen(Qt::darkGreen, 1));
+
     HFRPlot->setBackground(QBrush(Qt::black));
 
     HFRPlot->xAxis->setBasePen(QPen(Qt::white, 1));
@@ -153,16 +181,8 @@ Focus::Focus()
     HFRPlot->yAxis->setLabel(i18n("HFR"));
 
     v_graph = HFRPlot->addGraph();
-    //v_graph->setBrush(QBrush(QColor(170, 40, 80)));
-    //v_graph->setPen(QPen(Qt::red));
     v_graph->setLineStyle(QCPGraph::lsNone);
     v_graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::white, Qt::red, 3));
-
-    //HFRPlot->axis( KPlotWidget::LeftAxis )->setLabel( i18nc("Half Flux Radius", "HFR") );
-    //HFRPlot->axis( KPlotWidget::BottomAxis )->setLabel( i18n("Iterations") );
-
-    //HFRPlot->axis( KPlotWidget::LeftAxis )->setLabel( i18nc("Half Flux Radius", "HFR") );
-    //HFRPlot->axis( KPlotWidget::BottomAxis )->setLabel( i18n("Absolute Position") );
 
     resetButtons();
 
@@ -181,7 +201,6 @@ Focus::Focus()
     suspendGuideCheck->setChecked(Options::suspendGuiding());
     lockFilterCheck->setChecked(Options::lockFocusFilter());
     focusDarkFrameCheck->setChecked(Options::focusDarkFrame());
-
 }
 
 Focus::~Focus()
@@ -983,6 +1002,7 @@ void Focus::newFITS(IBLOB *bp)
     // If just framing, let's capture again
     else
     {
+        drawProfilePlot();
         capture();
         return;
 
@@ -1104,6 +1124,8 @@ void Focus::newFITS(IBLOB *bp)
         return;
     }
 
+    drawProfilePlot();
+
     if (focusType == FOCUS_MANUAL || inAutoFocus==false)
         return;
 
@@ -1142,6 +1164,34 @@ void Focus::drawHFRPlot()
 
     HFRPlot->replot();
 
+}
+
+void Focus::drawProfilePlot()
+{
+    QVector<double> key;
+    QVector<double> currentGaus;
+
+    // HFR = 50% * 1.36 = 68% aka one standard deviation
+    double stdDev = currentHFR * 1.36;
+    float start= -stdDev*4;
+    float end  = stdDev*4;
+    float step = stdDev*4 / 20.0;
+    for (float x=start; x < end; x+= step)
+    {
+        key.append(x);
+        currentGaus.append((1/(stdDev*sqrt(2*M_PI))) * exp(-1 * ( x*x ) / (2 * (stdDev * stdDev))));
+    }
+
+    profilePlot->graph(0)->setData(key, currentGaus);
+
+    if (lastGaus.count() > 0)
+        profilePlot->graph(1)->setData(lastGausRange, lastGaus);
+
+    profilePlot->rescaleAxes();
+    profilePlot->replot();
+
+    lastGaus      = currentGaus;
+    lastGausRange = key;
 }
 
 void Focus::autoFocusAbs()

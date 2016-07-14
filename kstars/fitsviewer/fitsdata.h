@@ -68,6 +68,8 @@ public:
     float width;
     float HFR;
     float sum;
+    float mean;
+    float stddev;
 };
 
 class FITSData
@@ -159,7 +161,7 @@ public:
     void setHistogram(FITSHistogram *inHistogram) { histogram = inHistogram; }
 
     // Filter
-    void applyFilter(FITSScale type, float *image=NULL, double min=-1, double max=-1);
+    void applyFilter(FITSScale type, float *image=NULL, float min=-1, float max=-1);
 
     // Rotation counter. We keep count to rotate WCS keywords on save
     int getRotCounter() const;
