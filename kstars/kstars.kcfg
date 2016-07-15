@@ -374,6 +374,11 @@
       <whatsthis>Toggle whether meteor showers are drawn in the sky map.</whatsthis>
       <default>false</default>
     </entry>
+    <entry name="ShowInactiveMS" type="Bool">
+      <label>Show inactive meteor showers in the sky map?</label>
+      <whatsthis>Toggle whether inactive meteor showers are drawn in the sky map.</whatsthis>
+      <default>false</default>
+    </entry>
     <entry name="MagnitudeLimitAlertSupernovae" type="Double">
        <label>Set magnitude limit for supernovae to be alerted</label>
        <whatsthis>Set magnitude limit for supernovae to be alerted.</whatsthis>

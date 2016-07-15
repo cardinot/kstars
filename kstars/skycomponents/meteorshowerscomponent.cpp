@@ -102,6 +102,9 @@ void MeteorShowersComponent::draw(SkyPainter *skyp)
     if (!selected())
         return;
 
-    foreach (SkyObject *o, m_ObjectList)
-        skyp->drawMeteorShower((MeteorShower*) o);
+    foreach (SkyObject* o, m_ObjectList) {
+        MeteorShower* ms = (MeteorShower*) o;
+        if (ms->getStatus() != MeteorShower::INACTIVE || Options::showInactiveMS())
+            skyp->drawMeteorShower(ms);
+    }
 }
