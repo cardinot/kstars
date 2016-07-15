@@ -20,17 +20,4 @@
 OpsMeteorShowers::OpsMeteorShowers() : QFrame(KStars::Instance())
 {
     setupUi(this);
-
-    // Signals and slots connections
-    connect(kcfg_ShowMeteorShowers, SIGNAL(toggled(bool)),
-            this, SLOT(slotShowMeteorShowers(bool)));
-}
-
-OpsMeteorShowers::~OpsMeteorShowers()
-{
-}
-
-void OpsMeteorShowers::slotShowMeteorShowers(bool on)
-{
-    kcfg_ShowMeteorShowers->setChecked(on);
 }

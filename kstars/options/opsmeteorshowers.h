@@ -41,10 +41,7 @@ public:
     /**
      * Destructor
      */
-    ~OpsMeteorShowers();
-
-private slots:
-    void slotShowMeteorShowers(bool on);
+    ~OpsMeteorShowers() {}
 };
 
 #endif  //OPSMETEORSHOWERS_H_
