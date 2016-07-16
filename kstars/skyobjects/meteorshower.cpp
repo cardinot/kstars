@@ -247,8 +247,7 @@ void MeteorShower::update()
         alpha.setD(m_peakAlpha.degree() + m_driftAlpha * daysToPeak);
         delta.setD(m_peakDelta.degree() + m_driftDelta * daysToPeak);
     }
-    setRA(alpha);
-    setDec(delta);
+    set(alpha, delta);
 }
 
 QString MeteorShower::getStatusStr()
