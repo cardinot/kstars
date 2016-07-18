@@ -1,6 +1,7 @@
 ########### install files ###############
 
 install(FILES
+    quasars.json
     showers.json
     kstars.png
     geomap.png
