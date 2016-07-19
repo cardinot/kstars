@@ -259,10 +259,9 @@ void DetailDialog::createGeneralTab()
         Data->Distance->setText( "---" );
 
         break;
-
     case SkyObject::METEOR_SHOWER: {
         MeteorShower* ms = (MeteorShower*) selectedObject;
-        objecttyp = i18n("Meteor Showers");
+        objecttyp = i18n("Meteor Shower");
         Data->Names->setText(ms->name());
         Data->Magnitude->setText("---");
         Data->Distance->setText("---");
