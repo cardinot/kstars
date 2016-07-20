@@ -50,6 +50,7 @@
 #include "skyobjects/ksasteroid.h"
 #include "skyobjects/supernova.h"
 #include "skyobjects/meteorshower.h"
+#include "skyobjects/quasar.h"
 #include "skycomponents/catalogcomponent.h"
 #include "thumbnailpicker.h"
 #include "Options.h"
@@ -310,6 +311,14 @@ void DetailDialog::createGeneralTab()
         }
 
         break;
+    }
+    case SkyObject::QUASAR: {
+        Quasar* q = (Quasar*) selectedObject;
+        objecttyp = i18n("Quasar");
+        Data->Names->setText(q->name());
+        Data->Magnitude->setText(i18nc("number in magnitudes", "%1 mag",
+                                       QLocale().toString(q->mag(), 'f', 2)));
+        Data->Distance->setText("---");
     }
     default: //deep-sky objects
         dso = (DeepSkyObject *)selectedObject;
