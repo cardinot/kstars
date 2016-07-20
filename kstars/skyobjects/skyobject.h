@@ -131,6 +131,7 @@ public:
         SATELLITE,
         SUPERNOVA,
         METEOR_SHOWER,
+        QUASAR,
         TYPE_UNKNOWN
     };
 

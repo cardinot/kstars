@@ -388,6 +388,7 @@ set(kstars_skyobjects_SRCS
     skyobjects/satellitegroup.cpp
     skyobjects/supernova.cpp
     skyobjects/meteorshower.cpp
+    skyobjects/quasar.cpp
 )
 
 set(kstars_dialogs_SRCS
