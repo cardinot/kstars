@@ -104,282 +104,281 @@ DetailDialog::~DetailDialog() {
 void DetailDialog::createGeneralTab()
 {
     Data = new DataWidget(this);
-    addPage( Data, i18n("General") );
+    addPage(Data, i18n("General"));
 
-    Data->Names->setPalette( titlePalette );
+    Data->Names->setPalette(titlePalette);
 
     //Connections
-    connect( Data->ObsListButton, SIGNAL( clicked() ), this, SLOT( addToObservingList() ) );
-    connect( Data->CenterButton, SIGNAL( clicked() ), this, SLOT( centerMap() ) );
+    connect(Data->ObsListButton, SIGNAL(clicked()), this, SLOT(addToObservingList()));
+    connect(Data->CenterButton, SIGNAL(clicked()), this, SLOT(centerMap()));
     #ifdef HAVE_INDI
-    connect( Data->ScopeButton, SIGNAL( clicked() ), this, SLOT( centerTelescope() ) );
+    connect(Data->ScopeButton, SIGNAL(clicked()), this, SLOT(centerTelescope()));
     #else
     Data->ScopeButton->setEnabled(false);
     #endif
-    connect( Data->Image, SIGNAL( clicked() ), this, SLOT( updateThumbnail() ) );
+    connect(Data->Image, SIGNAL(clicked()), this, SLOT(updateThumbnail()));
 
     // Stuff that should be visible only for specific types of objects
-    Data->IllumLabel->setVisible( false ); // Only shown for the moon
-    Data->Illumination->setVisible( false );
+    Data->IllumLabel->setVisible(false); // Only shown for the moon
+    Data->Illumination->setVisible(false);
 
-    Data->BVIndex->setVisible( false ); // Only shown for stars
-    Data->BVLabel->setVisible( false );
+    Data->BVIndex->setVisible(false); // Only shown for stars
+    Data->BVLabel->setVisible(false);
 
     //Show object thumbnail image
     showThumbnail();
 
     //Fill in the data fields
     //Contents depend on type of object
-    StarObject *s = 0L;
-    DeepSkyObject *dso = 0L;
-    KSPlanetBase *ps = 0L;
-    Supernova *sup = 0L;
-    QString pname, oname, objecttyp, constellationname, str;
+    QString objecttyp, str;
 
-    switch ( selectedObject->type() ) {
-    case SkyObject::STAR:
-        s = (StarObject *)selectedObject;
+    switch (selectedObject->type()) {
+        case SkyObject::STAR: {
+            StarObject* s = (StarObject*) selectedObject;
 
-        Data->Names->setText( s->longname() );
-
-        if( s->getHDIndex() != 0 ) {
-            if( !s->longname().isEmpty() )
-                Data->Names->setText( s->longname() + QString( ", HD %1" ).arg( QString::number( s->getHDIndex() ) ) );
-            else
-                Data->Names->setText( QString( ", HD %1" ).arg( QString::number( s->getHDIndex() ) ) );
-        }
-        objecttyp = s->sptype() + ' ' + i18n("star");
-        Data->Magnitude->setText( i18nc( "number in magnitudes", "%1 mag" ,
-                                         QLocale().toString( s->mag(), 'f', 2 ) ) );  //show to hundredth place
-
-        Data->BVLabel->setVisible( true );
-        Data->BVIndex->setVisible( true );
-        if( s->getBVIndex() < 30.0 )
-            Data->BVIndex->setText( QString::number( s->getBVIndex() , 'f', 2 ) );
-
-        //The thumbnail image is empty, and isn't clickable for stars
-        //Also, don't show the border around the Image QFrame.
-        Data->Image->setFrameStyle( QFrame::NoFrame );
-        disconnect( Data->Image, SIGNAL( clicked() ), this, SLOT( updateThumbnail() ) );
-
-        //distance
-        if ( s->distance() > 2000. || s->distance() < 0. )  // parallax < 0.5 mas
-            Data->Distance->setText( QString(i18nc("larger than 2000 parsecs", "> 2000 pc") ) );
-        else if ( s->distance() > 50.0 ) //show to nearest integer
-            Data->Distance->setText( i18nc( "number in parsecs", "%1 pc" ,
-                                            QLocale().toString( s->distance(), 'f', 0 ) ) );
-        else if ( s->distance() > 10.0 ) //show to tenths place
-            Data->Distance->setText( i18nc( "number in parsecs", "%1 pc" ,
-                                            QLocale().toString( s->distance(), 'f', 1 ) ) );
-        else //show to hundredths place
-            Data->Distance->setText( i18nc( "number in parsecs", "%1 pc" ,
-                                            QLocale().toString( s->distance(), 'f', 2 ) ) );
-
-        //Note multiplicity/variablility in angular size label
-        Data->AngSizeLabel->setText( QString() );
-        Data->AngSize->setText( QString() );
-        Data->AngSizeLabel->setFont( Data->AngSize->font() );
-        if ( s->isMultiple() && s->isVariable() ) {
-            Data->AngSizeLabel->setText( i18nc( "the star is a multiple star", "multiple" ) + ',' );
-            Data->AngSize->setText( i18nc( "the star is a variable star", "variable" ) );
-        } else if ( s->isMultiple() )
-            Data->AngSizeLabel->setText( i18nc( "the star is a multiple star", "multiple" ) );
-        else if ( s->isVariable() )
-            Data->AngSizeLabel->setText( i18nc( "the star is a variable star", "variable" ) );
-
-        break; //end of stars case
-    case SkyObject::ASTEROID:  //[fall through to planets]
-    case SkyObject::COMET:     //[fall through to planets]
-    case SkyObject::MOON:      //[fall through to planets]
-    case SkyObject::PLANET:
-        ps = (KSPlanetBase *)selectedObject;
-
-        Data->Names->setText( ps->longname() );
-        //Type is "G5 star" for Sun
-        if ( ps->name() == "Sun" )
-            objecttyp = i18n("G5 star");
-        else if ( ps->name() == "Moon" )
-            objecttyp = ps->translatedName();
-        else if ( ps->name() == i18n("Pluto") || ps->name() == "Ceres" || ps->name() == "Eris" ) // TODO: Check if Ceres / Eris have translations and i18n() them
-            objecttyp = i18n("Dwarf planet");
-        else
-            objecttyp = ps->typeName();
-
-        //The moon displays illumination fraction and updateMag is called to calculate moon's current magnitude
-        if ( selectedObject->name() == "Moon" ) {
-            Data->IllumLabel->setVisible( true );
-            Data->Illumination->setVisible( true );
-            Data->Illumination->setText( QString("%1 %").arg( QLocale().toString( ((KSMoon *)selectedObject)->illum()*100., 'f', 0 ) ) );
-            ((KSMoon *)selectedObject)->updateMag();
-        }
-        
-        // JM: Shouldn't we use the calculated magnitude? Disabling the following
-        /*
-        if(selectedObject->type() == SkyObject::COMET){
-            Data->Magnitude->setText( i18nc( "number in magnitudes", "%1 mag" ,
-                                             QLocale().toString( ((KSComet *)selectedObject)->getTotalMagnitudeParameter(), 'f', 2 ) ) );  //show to hundredth place
-
-        }
-        else{*/
-            Data->Magnitude->setText( i18nc( "number in magnitudes", "%1 mag" ,
-                                             QLocale().toString( ps->mag(), 'f', 2 ) ) );  //show to hundredth place
-        //}
-
-        //Distance from Earth.  The moon requires a unit conversion
-        if ( ps->name() == "Moon" ) {
-            Data->Distance->setText( i18nc("distance in kilometers", "%1 km",
-                                           QLocale().toString( ps->rearth()*AU_KM, 'f', 2 ) ) );
-        } else {
-            Data->Distance->setText( i18nc("distance in Astronomical Units", "%1 AU",
-                                           QLocale().toString( ps->rearth(), 'f', 3 ) ) );
-        }
-
-        //Angular size; moon and sun in arcmin, others in arcsec
-        if ( ps->angSize() ) {
-            if ( ps->name() == "Sun" || ps->name() == "Moon" )
-                Data->AngSize->setText( i18nc("angular size in arcminutes", "%1 arcmin",
-                                              QLocale().toString( ps->angSize(), 'f', 1 ) ) ); // Needn't be a plural form because sun / moon will never contract to 1 arcminute
-            else
-                Data->AngSize->setText( i18nc("angular size in arcseconds","%1 arcsec",
-                                              QLocale().toString( ps->angSize()*60.0 , 'f', 1 ) ));
-        } else {
-            Data->AngSize->setText( "--" );
-        }
-
-        break; //end of planets/comets/asteroids case
-
-    case SkyObject::SUPERNOVA:
-        sup=(Supernova *)selectedObject;
-
-        objecttyp = i18n("Supernova");
-
-        Data->Names->setText(sup->name());
-
-        Data->Magnitude->setText( i18nc( "number in magnitudes", "%1 mag" ,
-                                         QLocale().toString( sup->mag(), 'f', 2 ) ) );
-        Data->Distance->setText( "---" );
-
-        break;
-    case SkyObject::METEOR_SHOWER: {
-        MeteorShower* ms = (MeteorShower*) selectedObject;
-        objecttyp = i18n("Meteor Shower");
-        Data->Names->setText(ms->name());
-        Data->Magnitude->setText("---");
-        Data->Distance->setText("---");
-
-        DataMeteorShower = new DataMeteorShowerWidget(this);
-        Data->IncludeData->layout()->addWidget(DataMeteorShower);
-        DataMeteorShower->fStatus->setText(ms->getStatusStr());
-
-        DataMeteorShower->fDrift->setText(QString("%1/%2")
-                .arg(dms(ms->getRadiantDriftRA()).toHMSString())
-                .arg(dms(ms->getRadiantDriftDec()).toDMSString()));
-
-        if (ms->getSpeed())
-            DataMeteorShower->fSpeed->setText(QString("%1 km/s").arg(ms->getSpeed()));
-
-        if (!ms->getParentObject().isEmpty())
-            DataMeteorShower->fParent->setText(ms->getParentObject());
-
-        if (ms->getPopulationIdx())
-            DataMeteorShower->fPidx->setText(QString::number(ms->getPopulationIdx()));
-
-        // activity info
-        if (ms->getStatus() != MeteorShower::INACTIVE)
-        {
-            MeteorShower::Activity a = ms->getActivity();
-
-            DataMeteorShower->fPeak->setText(a.peak.toString("d MMMM"));
-
-            if (a.zhr > 0) {
-                DataMeteorShower->fZHR->setText(QString::number(a.zhr));
-            } else if (a.variable.size() == 2) {
-                DataMeteorShower->fZHR->setText(QString("%1-%2")
-                    .arg(a.variable.at(0)).arg(a.variable.at(1)));
-            }
-
-            if (a.start.month() == a.finish.month()) {
-                DataMeteorShower->fActivity->setText(QString("%1 - %2 %3")
-                                                     .arg(a.start.day())
-                                                     .arg(a.finish.day())
-                                                     .arg(a.start.toString("MMMM")));
+            if (s->getHDIndex()) {
+                Data->Names->setText(QString("%1, HD %2").arg(s->longname()).arg(s->getHDIndex()));
             } else {
-                DataMeteorShower->fActivity->setText(QString("%1: %2 - %3")
-                                                     .arg(a.start.toString("d MMMM"))
-                                                     .arg(a.finish.toString("d MMMM")));
+                Data->Names->setText(s->longname());
             }
+
+            objecttyp = s->sptype() + ' ' + i18n("star");
+            Data->Magnitude->setText(i18nc("number in magnitudes", "%1 mag",
+                                           QLocale().toString(s->mag(), 'f', 2)));  //show to hundredth place
+
+            Data->BVLabel->setVisible(true);
+            Data->BVIndex->setVisible(true);
+            if(s->getBVIndex() < 30.) {
+                Data->BVIndex->setText(QString::number(s->getBVIndex() , 'f', 2));
+            }
+
+            //The thumbnail image is empty, and isn't clickable for stars
+            //Also, don't show the border around the Image QFrame.
+            Data->Image->setFrameStyle(QFrame::NoFrame);
+            disconnect(Data->Image, SIGNAL(clicked()), this, SLOT(updateThumbnail()));
+
+            //distance
+            if (s->distance() > 2000. || s->distance() < 0.) { // parallax < 0.5 mas
+                Data->Distance->setText(QString(i18nc("larger than 2000 parsecs", "> 2000 pc")));
+            } else if (s->distance() > 50.) { //show to nearest integer
+                Data->Distance->setText(i18nc("number in parsecs", "%1 pc",
+                                              QLocale().toString( s->distance(), 'f', 0)));
+            } else if (s->distance() > 10.0) { //show to tenths place
+                Data->Distance->setText(i18nc("number in parsecs", "%1 pc",
+                                              QLocale().toString( s->distance(), 'f', 1)));
+            } else { //show to hundredths place
+                Data->Distance->setText(i18nc("number in parsecs", "%1 pc",
+                                              QLocale().toString(s->distance(), 'f', 2 )));
+            }
+
+            //Note multiplicity/variablility in angular size label
+            Data->AngSizeLabel->setText(QString());
+            Data->AngSize->setText(QString());
+            Data->AngSizeLabel->setFont(Data->AngSize->font());
+            if (s->isMultiple() && s->isVariable()) {
+                Data->AngSizeLabel->setText(i18nc( "the star is a multiple star", "multiple" ) + ',');
+                Data->AngSize->setText(i18nc( "the star is a variable star", "variable" ));
+            } else if (s->isMultiple()) {
+                Data->AngSizeLabel->setText(i18nc("the star is a multiple star", "multiple"));
+            } else if (s->isVariable()) {
+                Data->AngSizeLabel->setText(i18nc("the star is a variable star", "variable"));
+            }
+
+            break; //end of stars case
         }
+        case SkyObject::ASTEROID:  //[fall through to planets]
+        case SkyObject::COMET:     //[fall through to planets]
+        case SkyObject::MOON:      //[fall through to planets]
+        case SkyObject::PLANET: {
+            KSPlanetBase* ps = (KSPlanetBase*) selectedObject;
 
-        break;
-    }
-    case SkyObject::QUASAR: {
-        Quasar* q = (Quasar*) selectedObject;
-        objecttyp = i18n("Quasar");
-        Data->Names->setText(q->name());
-        Data->Magnitude->setText(i18nc("number in magnitudes", "%1 mag",
-                                       QLocale().toString(q->mag(), 'f', 2)));
-        Data->Distance->setText("---");
-    }
-    default: //deep-sky objects
-        dso = (DeepSkyObject *)selectedObject;
+            Data->Names->setText(ps->longname());
 
-        //Show all names recorded for the object
-        if ( ! dso->longname().isEmpty() && dso->longname() != dso->name() ) {
-            pname = dso->translatedLongName();
-            oname = dso->translatedName();
-        } else {
-            pname = dso->translatedName();
+            //Type is "G5 star" for Sun
+            if (ps->name() == "Sun") {
+                objecttyp = i18n("G5 star");
+            } else if (ps->name() == "Moon") {
+                objecttyp = ps->translatedName();
+            } else if (ps->name() == i18n("Pluto") || ps->name() == "Ceres" || ps->name() == "Eris") { // TODO: Check if Ceres / Eris have translations and i18n() them
+                objecttyp = i18n("Dwarf planet");
+            } else {
+                objecttyp = ps->typeName();
+            }
+
+            //The moon displays illumination fraction and updateMag is called to calculate moon's current magnitude
+            if (selectedObject->name() == "Moon") {
+                Data->IllumLabel->setVisible(true);
+                Data->Illumination->setVisible(true);
+                Data->Illumination->setText(QString("%1 %").arg(QLocale().toString(((KSMoon*)selectedObject)->illum()*100., 'f', 0)));
+                ((KSMoon *)selectedObject)->updateMag();
+            }
+        
+            // JM: Shouldn't we use the calculated magnitude? Disabling the following
+            /*
+            if(selectedObject->type() == SkyObject::COMET){
+                Data->Magnitude->setText(i18nc("number in magnitudes", "%1 mag",
+                                         QLocale().toString( ((KSComet *)selectedObject)->getTotalMagnitudeParameter(), 'f', 2)));  //show to hundredth place
+
+            }
+            else{*/
+                Data->Magnitude->setText(i18nc("number in magnitudes", "%1 mag",
+                                               QLocale().toString(ps->mag(), 'f', 2)));  //show to hundredth place
+            //}
+
+            //Distance from Earth.  The moon requires a unit conversion
+            if (ps->name() == "Moon") {
+                Data->Distance->setText(i18nc("distance in kilometers", "%1 km",
+                                              QLocale().toString(ps->rearth()*AU_KM, 'f', 2)));
+            } else {
+                Data->Distance->setText(i18nc("distance in Astronomical Units", "%1 AU",
+                                              QLocale().toString( ps->rearth(), 'f', 3)));
+            }
+
+            //Angular size; moon and sun in arcmin, others in arcsec
+            if (ps->angSize()) {
+                if (ps->name() == "Sun" || ps->name() == "Moon") {
+                    Data->AngSize->setText(i18nc("angular size in arcminutes", "%1 arcmin",
+                                                 QLocale().toString(ps->angSize(), 'f', 1))); // Needn't be a plural form because sun / moon will never contract to 1 arcminute
+                } else {
+                    Data->AngSize->setText(i18nc("angular size in arcseconds","%1 arcsec",
+                                                 QLocale().toString( ps->angSize()*60.0 , 'f', 1)));
+                }
+            } else {
+                Data->AngSize->setText( "--" );
+            }
+
+            break; //end of planets/comets/asteroids case
         }
+        case SkyObject::SUPERNOVA: {
+            Supernova* sup=(Supernova*) selectedObject;
 
-        if ( ! dso->translatedName2().isEmpty() ) {
-            if ( oname.isEmpty() ) oname = dso->translatedName2();
-            else oname += ", " + dso->translatedName2();
+            objecttyp = i18n("Supernova");
+            Data->Names->setText(sup->name());
+            Data->Magnitude->setText(i18nc("number in magnitudes", "%1 mag",
+                                       QLocale().toString(sup->mag(), 'f', 2)));
+            Data->Distance->setText("---");
+
+            break;
         }
+        case SkyObject::METEOR_SHOWER: {
+            MeteorShower* ms = (MeteorShower*) selectedObject;
+            objecttyp = i18n("Meteor Shower");
+            Data->Names->setText(ms->name());
+            Data->Magnitude->setText("---");
+            Data->Distance->setText("---");
 
-        if ( dso->ugc() != 0 ) {
-            if ( ! oname.isEmpty() ) oname += ", ";
-            oname += "UGC " + QString::number( dso->ugc() );
+            DataMeteorShower = new DataMeteorShowerWidget(this);
+            Data->IncludeData->layout()->addWidget(DataMeteorShower);
+            DataMeteorShower->fStatus->setText(ms->getStatusStr());
+
+            DataMeteorShower->fDrift->setText(QString("%1/%2")
+                    .arg(dms(ms->getRadiantDriftRA()).toHMSString())
+                    .arg(dms(ms->getRadiantDriftDec()).toDMSString()));
+
+            if (ms->getSpeed())
+                DataMeteorShower->fSpeed->setText(QString("%1 km/s").arg(ms->getSpeed()));
+
+            if (!ms->getParentObject().isEmpty())
+                DataMeteorShower->fParent->setText(ms->getParentObject());
+
+            if (ms->getPopulationIdx())
+                DataMeteorShower->fPidx->setText(QString::number(ms->getPopulationIdx()));
+
+            // activity info
+            if (ms->getStatus() != MeteorShower::INACTIVE) {
+                MeteorShower::Activity a = ms->getActivity();
+
+                DataMeteorShower->fPeak->setText(a.peak.toString("d MMMM"));
+
+                if (a.zhr > 0) {
+                    DataMeteorShower->fZHR->setText(QString::number(a.zhr));
+                } else if (a.variable.size() == 2) {
+                    DataMeteorShower->fZHR->setText(QString("%1-%2")
+                        .arg(a.variable.at(0)).arg(a.variable.at(1)));
+                }
+
+                if (a.start.month() == a.finish.month()) {
+                    DataMeteorShower->fActivity->setText(QString("%1 - %2 %3")
+                                                         .arg(a.start.day())
+                                                         .arg(a.finish.day())
+                                                         .arg(a.start.toString("MMMM")));
+                } else {
+                    DataMeteorShower->fActivity->setText(QString("%1: %2 - %3")
+                                                         .arg(a.start.toString("d MMMM"))
+                                                         .arg(a.finish.toString("d MMMM")));
+                }
+            }
+
+            break;
         }
-        if ( dso->pgc() != 0 ) {
-            if ( ! oname.isEmpty() ) oname += ", ";
-            oname += "PGC " + QString::number( dso->pgc() );
+        case SkyObject::QUASAR: {
+            Quasar* q = (Quasar*) selectedObject;
+            objecttyp = i18n("Quasar");
+            Data->Names->setText(q->name());
+            Data->Magnitude->setText(i18nc("number in magnitudes", "%1 mag",
+                                           QLocale().toString(q->mag(), 'f', 2)));
+            Data->Distance->setText("---");
         }
+        default: { //deep-sky objects
+            DeepSkyObject* dso = (DeepSkyObject*) selectedObject;
 
-        if ( ! oname.isEmpty() ) pname += ", " + oname;
-        Data->Names->setText( pname );
+            //Show all names recorded for the object
+            QStringList nameList;
+            if (!dso->longname().isEmpty() && dso->longname() != dso->name()) {
+                nameList.append(dso->translatedLongName());
+                nameList.append(dso->translatedName());
+            } else {
+                nameList.append(dso->translatedName());
+            }
 
-        objecttyp = dso->typeName();
+            if (!dso->translatedName2().isEmpty()) {
+                nameList.append(dso->translatedName2());
+            }
 
-        if (dso->type() == SkyObject::RADIO_SOURCE)
-        {
-            Data->MagLabel->setText(i18nc("integrated flux at a frequency", "Flux(%1):", dso->customCatalog()->fluxFrequency()));
-            Data->Magnitude->setText( i18nc( "integrated flux value", "%1 %2" ,
-                                             QLocale().toString( dso->flux(), 'f', 1 ), dso->customCatalog()->fluxUnit()) );  //show to tenths place
+            if (dso->ugc() != 0) {
+                nameList.append(QString("UGC %1").arg(dso->ugc()));
+            }
+
+            if (dso->pgc() != 0) {
+                nameList.append(QString("PGC %1").arg(dso->pgc()));
+            }
+
+            Data->Names->setText(nameList.join(","));
+
+            objecttyp = dso->typeName();
+
+            if (dso->type() == SkyObject::RADIO_SOURCE)
+            {
+                Data->MagLabel->setText(i18nc("integrated flux at a frequency", "Flux(%1):", dso->customCatalog()->fluxFrequency()));
+                Data->Magnitude->setText(i18nc("integrated flux value", "%1 %2",
+                                               QLocale().toString(dso->flux(), 'f', 1), dso->customCatalog()->fluxUnit()));  //show to tenths place
+            } else if (dso->mag() > 90.0) {
+                Data->Magnitude->setText("--");
+            } else {
+                Data->Magnitude->setText(i18nc("number in magnitudes", "%1 mag",
+                                               QLocale().toString( dso->mag(), 'f', 1)));  //show to tenths place
+            }
+
+            //No distances at this point...
+            Data->Distance->setText("--");
+
+            //Only show decimal place for small angular sizes
+            if (dso->a() > 10.0) {
+                Data->AngSize->setText(i18nc("angular size in arcminutes", "%1 arcmin",
+                                             QLocale().toString(dso->a(), 'f', 0)));
+            } else if (dso->a()) {
+                Data->AngSize->setText(i18nc("angular size in arcminutes", "%1 arcmin",
+                                          QLocale().toString( dso->a(), 'f', 1 )));
+            } else {
+                Data->AngSize->setText("--");
+            }
+
+            break;
         }
-        else if ( dso->mag() > 90.0 )
-            Data->Magnitude->setText( "--" );
-        else
-            Data->Magnitude->setText( i18nc( "number in magnitudes", "%1 mag" ,
-                                             QLocale().toString( dso->mag(), 'f', 1 ) ) );  //show to tenths place
-
-        //No distances at this point...
-        Data->Distance->setText( "--" );
-
-        //Only show decimal place for small angular sizes
-        if ( dso->a() > 10.0 )
-            Data->AngSize->setText( i18nc("angular size in arcminutes", "%1 arcmin",
-                                          QLocale().toString(dso->a(), 'f', 0 ) ) );
-        else if ( dso->a() )
-            Data->AngSize->setText( i18nc("angular size in arcminutes", "%1 arcmin",
-                                          QLocale().toString( dso->a(), 'f', 1 ) ) );
-        else
-            Data->AngSize->setText( "--" );
-
-        break;
     }
 
     // Add specifics data
-    switch ( selectedObject->type() ) {
+    switch (selectedObject->type()) {
         case SkyObject::ASTEROID: {
             KSAsteroid* ast = (KSAsteroid *)selectedObject;
             DataComet = new DataCometWidget( this );    // Show same specifics data as comets
@@ -490,19 +489,14 @@ void DetailDialog::createGeneralTab()
 
             break;
         }
-        case SkyObject::SUPERNOVA: {
-            break;
-        }
     }
 
     //Common to all types:
-    if ( selectedObject->type() == SkyObject::CONSTELLATION )
-        Data->ObjectTypeInConstellation->setText(
-            KStarsData::Instance()->skyComposite()->getConstellationBoundary()->constellationName( selectedObject ) );
-    else
-        Data->ObjectTypeInConstellation->setText( 
-            i18nc("%1 type of sky object (planet, asteroid etc), %2 name of a constellation", "%1 in %2", objecttyp,
-                  KStarsData::Instance()->skyComposite()->getConstellationBoundary()->constellationName( selectedObject ) ) );
+    QString cname = KStarsData::Instance()->skyComposite()->getConstellationBoundary()->constellationName(selectedObject);
+    if (selectedObject->type() != SkyObject::CONSTELLATION) {
+        cname = i18nc("%1 type of sky object (planet, asteroid etc), %2 name of a constellation", "%1 in %2", objecttyp, cname);
+    }
+    Data->ObjectTypeInConstellation->setText(cname);
 }
 
 void DetailDialog::createPositionTab( const KStarsDateTime &ut, GeoLocation *geo ) {
