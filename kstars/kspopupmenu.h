@@ -117,6 +117,12 @@ public:
      */
     void createMeteorShowerMenu(MeteorShower *ms);
 
+    /**
+     * @short Create a popup menu for a quasar
+     * @param qs the quasar which the menu describes.
+     */
+    void createQuasarMenu(MeteorShower *qs);
+
     /** @short Create a popup menu for empty sky.
      *
      * The popup menu when right-clicking on nothing is still useful.

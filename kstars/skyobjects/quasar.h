@@ -49,8 +49,8 @@ public:
 
 private:
     QString m_quasarID;        // the Quasar id
-    double m_ra;               // R.A.
-    double m_dec;              // Dec.
+    dms m_ra;                  // R.A.
+    dms m_dec;                 // Dec.
     float m_absMag;            // absolute magnitude
     float m_visMag;            // visual magnitude
     float m_bV;                // B-V color index

@@ -265,10 +265,16 @@ void KSPopupMenu::createSupernovaMenu(Supernova* supernova)
     initPopupMenu( supernova, name, i18n( "supernova" ), i18n("%1<sup>m</sup>, %2", mag, type) );
 }
 
-void KSPopupMenu::createMeteorShowerMenu(MeteorShower *ms)
+void KSPopupMenu::createMeteorShowerMenu(MeteorShower* ms)
 {
     QString name = QString("%1 (%2)").arg(ms->name()).arg(ms->name2());
     initPopupMenu(ms, name, i18n( "Meteor Shower" ), QString());
+}
+
+void KSPopupMenu::createQuasarMenu(MeteorShower* qs)
+{
+    QString name = QString("%1 (%2)").arg(ms->name()).arg(ms->name2());
+    initPopupMenu(qs, name, i18n( "Quasar" ), QString());
 }
 
 void KSPopupMenu::initPopupMenu( SkyObject *obj, QString name, QString type, QString info,

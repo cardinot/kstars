@@ -38,8 +38,8 @@ Quasar::Quasar(const QVariantMap& map)
     }
 
     m_quasarID  = map.value("quasarID").toString();
-    m_ra = dms(map.value("RA").toString());
-    m_dec = dms(map.value("DE").toString());
+    m_ra = dms(map.value("RA").toString(), false);
+    m_dec = dms(map.value("DE").toString(), false);
     m_absMag = map.value("Amag").toFloat();
     m_visMag = map.value("Vmag").toFloat();
     m_bV = map.value("bV").toFloat();
