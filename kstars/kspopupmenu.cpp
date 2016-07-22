@@ -32,6 +32,7 @@
 #include "skyobjects/satellite.h"
 #include "skyobjects/supernova.h"
 #include "skyobjects/meteorshower.h"
+#include "skyobjects/quasar.h"
 #include "skycomponents/skymapcomposite.h"
 #include "skycomponents/flagcomponent.h"
 #include "skymap.h"
@@ -271,7 +272,7 @@ void KSPopupMenu::createMeteorShowerMenu(MeteorShower* ms)
     initPopupMenu(ms, name, i18n( "Meteor Shower" ), QString());
 }
 
-void KSPopupMenu::createQuasarMenu(MeteorShower* qs)
+void KSPopupMenu::createQuasarMenu(Quasar* qs)
 {
     QString name = QString("%1 (%2)").arg(ms->name()).arg(ms->name2());
     initPopupMenu(qs, name, i18n( "Quasar" ), QString());

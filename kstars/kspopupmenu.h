@@ -31,6 +31,7 @@ class KSMoon;
 class Satellite;
 class Supernova;
 class MeteorShower;
+class Quasar;
 
 /** @class KSPopupMenu
 	*The KStars Popup Menu.  The menu is sensitive to the 
@@ -121,7 +122,7 @@ public:
      * @short Create a popup menu for a quasar
      * @param qs the quasar which the menu describes.
      */
-    void createQuasarMenu(MeteorShower *qs);
+    void createQuasarMenu(Quasar *qs);
 
     /** @short Create a popup menu for empty sky.
      *
